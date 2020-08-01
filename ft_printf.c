@@ -6,7 +6,7 @@
 /*   By: clauren <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/01 22:08:41 by clauren           #+#    #+#             */
-/*   Updated: 2020/08/01 22:58:13 by clauren          ###   ########.fr       */
+/*   Updated: 2020/08/01 22:58:25 by clauren          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ int switcher(va_list ap, int wid, int prec, char type)
 		return(print_xd(ap, wid, prec, type));
 	if (type == 's')
 		return(print_s(ap, wid, prec));
+	return (-1);
 }
 
 int parse(char *fmt, va_list ap)
