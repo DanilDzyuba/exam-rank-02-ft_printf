@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clauren <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/01 22:08:41 by clauren           #+#    #+#             */
-/*   Updated: 2020/08/01 22:58:25 by clauren          ###   ########.fr       */
+/*   Updated: 2020/08/12 22:51:17 by clauren          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,10 @@ int number_len(long long n, int base)
 	int len;
 
 	len = 1;
-	if (n < 0)
+	if (n < 0 )
 	{
-		len++;
+		if (base == 10)
+			len++;
 		n *= -1;
 	}
 	while ((n / base) > 0)
@@ -66,19 +67,34 @@ char *ltoa_base(long long n, int base, int prec)
 	int i;
 	char *result;
 	char c;
+	int flag;
 
 	i = 0;
+	flag = 0;
 	len = number_len(n, base);
-	if (len < prec)
+	if ((len < prec) && (flag = 1))
 		len = prec;
-	if(!(result = malloc(sizeof(char) * len + 1)))
+	if (len == 1 && n == 0 && !prec)
 		return (NULL);
-	if (n < 0 && (n *= -1))
-		result[i++] = '-';
-	while (prec && (i < len))
+	if(!(result = malloc(sizeof(char) * (len + 1))))
+		return (NULL);
+	if (n < 0)
+	{
+		n *= -1;
+		if (base == 10)
+		{
+			if (flag)
+				len++;
+			result[i++] = '-';
+		}
+
+	}
+	while(i < len && prec)
+	{
 		result[i++] = '0';
+	}
 	result[len--] = '\0';
-	while((n % base) > 0)
+	while(n)
 	{
 		c = n % base;
 		n /= base;
@@ -90,31 +106,38 @@ char *ltoa_base(long long n, int base, int prec)
 
 int print_xd(va_list ap, int wid, int prec, char type)
 {
-	int len;
+	int len = 0;
+	int spaces;
 	char *num;
+	int k;
 
+	k = 0;
+	spaces = 0;
 	if (type == 'd')
 		num = ltoa_base(va_arg(ap, int), 10, prec);
 	else if (type == 'x')
 		num = ltoa_base(va_arg(ap, unsigned long), 16, prec);
 	else
 		return (-1);
+	if (!num)
+		num = calloc(1, 1);
 	len = ft_strlen(num);
-	if (len < wid)
+	if ((len) < wid)
 	{
-		fill(' ', (wid - len));
-		len += (wid - len);
+		spaces = wid - (len);
+		fill(' ', spaces);
 	}
-	while(*num)
-		print(*(num++));
-	return (len);
+	while(k < len)
+		print(num[k++]);
+	free(num);
+	return (len + spaces);
 }
 
 int print_s(va_list ap, int wid, int prec)
 {
 	int len;
 	char *str;
-	int i;
+	int i = 0;
 	int spaces;
 
 	str = va_arg(ap, char *);
@@ -189,14 +212,9 @@ int ft_printf(const char *fmt, ...)
 	va_list ap;
 	int len;
 	va_start(ap, fmt);
-	len = parse(fmt, ap);
+	len = parse((char *)fmt, ap);
 	va_end(ap);
 	return (len);
 }
 
-int main()
-{
-	printf("%d\n", printf("|%.3x|\n", 1352345));
-	printf("%d\n", ft_printf("|%.3x|\n", 1352345));
-	return (0);
-}
+
