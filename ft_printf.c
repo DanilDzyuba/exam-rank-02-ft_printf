@@ -6,7 +6,7 @@
 /*   By: clauren <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/01 22:08:41 by clauren           #+#    #+#             */
-/*   Updated: 2020/08/13 00:19:49 by clauren          ###   ########.fr       */
+/*   Updated: 2020/08/13 00:28:28 by clauren          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ char		*ltoa_base(long long n, int base, int prec)
 	len = number_len(n, base);
 	if ((len < prec) && (flag = 1))
 		len = prec;
-	if (len == 1 && n == 0 && !prec)
-		return (NULL);
+	if (n == 0 && !prec)
+		len = 0;
 	if (!(result = malloc(sizeof(char) * (len + 1))))
 		return (NULL);
 	if (n < 0)
@@ -128,8 +128,6 @@ int			print_xd(va_list ap, int wid, int prec, char type)
 		num = ltoa_base(va_arg(ap, unsigned long), 16, prec);
 	else
 		return (-1);
-	if (!num)
-		num = calloc(1, 1);
 	len = ft_strlen(num);
 	if ((len) < wid)
 	{
@@ -231,3 +229,5 @@ int			ft_printf(const char *fmt, ...)
 	va_end(ap);
 	return (len);
 }
+
+
