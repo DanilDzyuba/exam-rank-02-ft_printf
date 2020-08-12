@@ -6,7 +6,7 @@
 /*   By: clauren <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/01 22:08:41 by clauren           #+#    #+#             */
-/*   Updated: 2020/08/13 00:14:09 by clauren          ###   ########.fr       */
+/*   Updated: 2020/08/13 00:19:49 by clauren          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,36 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-void print(char c)
+void		print(char c)
 {
 	write(1, &c, 1);
 }
 
-void fill(char c, int n)
+void		fill(char c, int n)
 {
-	while(n--)
+	while (n--)
 		print(c);
 }
 
-int is_flag(char c)
+int			is_flag(char c)
 {
-	char *flags = "-+0 ";
+	char *flags;
+
+	flags = "-+0 ";
 	while (*flags)
 		if (c == *flags++)
 			return (1);
 	return (0);
 }
-int is_digit(char c)
+
+int			is_digit(char c)
 {
 	if ((c >= '0') && (c <= '9'))
 		return (1);
 	return (0);
 }
 
-int ft_strlen(char *s)
+int			ft_strlen(char *s)
 {
 	int i;
 
@@ -51,12 +54,12 @@ int ft_strlen(char *s)
 	return (i);
 }
 
-int number_len(long long n, int base)
+int			number_len(long long n, int base)
 {
 	int len;
 
 	len = 1;
-	if (n < 0 )
+	if (n < 0)
 	{
 		if (base == 10)
 			len++;
@@ -70,13 +73,13 @@ int number_len(long long n, int base)
 	return (len);
 }
 
-char *ltoa_base(long long n, int base, int prec)
+char		*ltoa_base(long long n, int base, int prec)
 {
-	int len;
-	int i;
-	char *result;
-	char c;
-	int flag;
+	int		len;
+	int		i;
+	char	*result;
+	char	c;
+	int		flag;
 
 	i = 0;
 	flag = 0;
@@ -85,7 +88,7 @@ char *ltoa_base(long long n, int base, int prec)
 		len = prec;
 	if (len == 1 && n == 0 && !prec)
 		return (NULL);
-	if(!(result = malloc(sizeof(char) * (len + 1))))
+	if (!(result = malloc(sizeof(char) * (len + 1))))
 		return (NULL);
 	if (n < 0)
 	{
@@ -96,14 +99,11 @@ char *ltoa_base(long long n, int base, int prec)
 				len++;
 			result[i++] = '-';
 		}
-
 	}
-	while(i < len && prec)
-	{
+	while (i < len && prec)
 		result[i++] = '0';
-	}
 	result[len--] = '\0';
-	while(n)
+	while (n)
 	{
 		c = n % base;
 		n /= base;
@@ -113,12 +113,12 @@ char *ltoa_base(long long n, int base, int prec)
 	return (result);
 }
 
-int print_xd(va_list ap, int wid, int prec, char type)
+int			print_xd(va_list ap, int wid, int prec, char type)
 {
-	int len = 0;
-	int spaces;
-	char *num;
-	int k;
+	int		len;
+	int		spaces;
+	char	*num;
+	int		k;
 
 	k = 0;
 	spaces = 0;
@@ -136,19 +136,20 @@ int print_xd(va_list ap, int wid, int prec, char type)
 		spaces = wid - (len);
 		fill(' ', spaces);
 	}
-	while(k < len)
+	while (k < len)
 		print(num[k++]);
 	free(num);
 	return (len + spaces);
 }
 
-int print_s(va_list ap, int wid, int prec)
+int			print_s(va_list ap, int wid, int prec)
 {
-	int len;
-	char *str;
-	int i = 0;
-	int spaces;
+	int		len;
+	char	*str;
+	int		i;
+	int		spaces;
 
+	i = 0;
 	str = va_arg(ap, char *);
 	if (!str)
 		str = "(null)";
@@ -168,30 +169,30 @@ int print_s(va_list ap, int wid, int prec)
 	return (len + spaces);
 }
 
-int switcher(va_list ap, int wid, int prec, char type)
+int			switcher(va_list ap, int wid, int prec, char type)
 {
 	if (type == 'd' || type == 'x')
-		return(print_xd(ap, wid, prec, type));
+		return (print_xd(ap, wid, prec, type));
 	if (type == 's')
-		return(print_s(ap, wid, prec));
+		return (print_s(ap, wid, prec));
 	return (-1);
 }
 
-int parse(char *fmt, va_list ap)
+int			parse(char *fmt, va_list ap)
 {
-	int len;
-	int prec;
-	int wid;
-	char type;
+	int		len;
+	int		prec;
+	int		wid;
+	char	type;
 
 	len = 0;
-	while(*fmt)
+	while (*fmt)
 	{
 		if (*fmt != '%')
 		{
 			len++;
 			print(*fmt++);
-			continue ;
+			continue;
 		}
 		prec = -1;
 		wid = 0;
@@ -199,7 +200,7 @@ int parse(char *fmt, va_list ap)
 		fmt++;
 		while (is_flag(*fmt))
 			fmt++;
-		while(is_digit(*fmt))
+		while (is_digit(*fmt))
 		{
 			wid = 10 * wid + (*fmt - '0');
 			fmt++;
@@ -220,10 +221,11 @@ int parse(char *fmt, va_list ap)
 	return (len);
 }
 
-int ft_printf(const char *fmt, ...)
+int			ft_printf(const char *fmt, ...)
 {
-	va_list ap;
-	int len;
+	va_list	ap;
+	int		len;
+
 	va_start(ap, fmt);
 	len = parse((char *)fmt, ap);
 	va_end(ap);
