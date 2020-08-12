@@ -6,7 +6,7 @@
 /*   By: clauren <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/01 22:08:41 by clauren           #+#    #+#             */
-/*   Updated: 2020/08/12 22:51:17 by clauren          ###   ########.fr       */
+/*   Updated: 2020/08/13 00:14:09 by clauren          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,15 @@ void fill(char c, int n)
 {
 	while(n--)
 		print(c);
+}
+
+int is_flag(char c)
+{
+	char *flags = "-+0 ";
+	while (*flags)
+		if (c == *flags++)
+			return (1);
+	return (0);
 }
 int is_digit(char c)
 {
@@ -141,6 +150,8 @@ int print_s(va_list ap, int wid, int prec)
 	int spaces;
 
 	str = va_arg(ap, char *);
+	if (!str)
+		str = "(null)";
 	len = ft_strlen(str);
 	spaces = 0;
 	if ((prec != -1) && len > prec)
@@ -186,6 +197,8 @@ int parse(char *fmt, va_list ap)
 		wid = 0;
 		type = ' ';
 		fmt++;
+		while (is_flag(*fmt))
+			fmt++;
 		while(is_digit(*fmt))
 		{
 			wid = 10 * wid + (*fmt - '0');
@@ -216,5 +229,3 @@ int ft_printf(const char *fmt, ...)
 	va_end(ap);
 	return (len);
 }
-
-
