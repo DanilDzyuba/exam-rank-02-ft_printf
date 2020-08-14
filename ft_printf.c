@@ -6,7 +6,7 @@
 /*   By: clauren <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/01 22:08:41 by clauren           #+#    #+#             */
-/*   Updated: 2020/08/13 00:28:28 by clauren          ###   ########.fr       */
+/*   Updated: 2020/08/14 23:06:08 by clauren          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char		*ltoa_base(long long n, int base, int prec)
 	i = 0;
 	flag = 0;
 	len = number_len(n, base);
-	if ((len < prec) && (flag = 1))
+	if ((len <= prec) && (flag = 1))
 		len = prec;
 	if (n == 0 && !prec)
 		len = 0;
@@ -129,9 +129,9 @@ int			print_xd(va_list ap, int wid, int prec, char type)
 	else
 		return (-1);
 	len = ft_strlen(num);
-	if ((len) < wid)
+	if (len < wid)
 	{
-		spaces = wid - (len);
+		spaces = wid - len;
 		fill(' ', spaces);
 	}
 	while (k < len)
